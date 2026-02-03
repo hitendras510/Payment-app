@@ -92,7 +92,9 @@ UserRouter.put("/",authMiddleware,async(req,res)=>{
         message: "Updated successfully!"
     })
 })
-
+UserRouter.get("/bulk",async(req,res)=>{
+    
+})
 
 
 
