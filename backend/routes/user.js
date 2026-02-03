@@ -93,7 +93,7 @@ UserRouter.put("/",authMiddleware,async(req,res)=>{
     })
 })
 UserRouter.get("/bulk",async(req,res)=>{
-    
+    const 
 })
 
 
