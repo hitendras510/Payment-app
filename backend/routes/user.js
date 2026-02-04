@@ -93,7 +93,30 @@ UserRouter.put("/",authMiddleware,async(req,res)=>{
     })
 })
 UserRouter.get("/bulk",async(req,res)=>{
-    const 
+    const filter = req.query.filter||"";
+
+    const users = await User.find({
+      $or: [
+        {
+          //matches either condition -> return data
+          firstName: {
+            $regex: filter, //regex will find the string which matches the filter(required value or given value) in the database
+          },
+        },
+        {
+          lastName: {
+            $regex: filter,
+          }   
+        }],
+    });
+    res.json({
+        user: users.map(user=> ({
+            username: user.username,
+            firstname: user.firstName,
+            lastname: user.lastName,
+            _id: user._id
+        }))
+    })
 })
 
 
