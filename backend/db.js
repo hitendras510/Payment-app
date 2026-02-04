@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { number, object } from "zod";
 dotenv.config();
 
 const UserSchema = new mongoose.Schema({
@@ -30,6 +31,17 @@ const UserSchema = new mongoose.Schema({
     maxLength: 50,
   },
 });
+const accountSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  } , 
+  balance: {
+    type: Number,
+    default: 0
+  }
+});
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI);
@@ -39,6 +51,8 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
-const User = mongoose.model("User", UserSchema);
 
-module.exports = { connectDB, User };
+const User = mongoose.model("User", UserSchema);
+const account = mongoose.model("account", accountSchema);
+
+module.exports = { connectDB, User, account };
