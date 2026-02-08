@@ -1,26 +1,27 @@
-const {JWT_SECRET} = require("./config");
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "./config.js";
 
-const authMiddleware = (req,res,next)=>{
-    const authHeader = req.headers.authHeader;
+const authMiddleware = (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
-    if(!authHeader || authHeader.startsWith('Bearer')){
-      //Bearer is an authentication scheme(Bearer = “whoever bears (has) this token is allowed”)
-      return res.status(403).json({
-        message: "Unauthorized",
-      });
-    }
-    const token = authHeader.split(" ")[1]; //Bearer token are splitted by space
-    try {
-        const decoded = jwt.verify(token,JWT_SECRET);
-        req.userId = decoded.userId;
+  // Header must exist AND start with "Bearer "
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(403).json({
+      message: "Unauthorized",
+    });
+  }
 
-        next();
-    } catch (err) {
-        return res.status(403).json({
-            message: "Unauthorized"
-        })
-    }
-}
+  const token = authHeader.split(" ")[1];
 
-module.exports = authMiddleware;
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.userId = decoded.userId;
+    next();
+  } catch (err) {
+    return res.status(403).json({
+      message: "Unauthorized",
+    });
+  }
+};
+
+export { authMiddleware };
